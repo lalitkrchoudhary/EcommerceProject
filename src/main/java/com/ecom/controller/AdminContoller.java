@@ -147,6 +147,8 @@ public class AdminContoller {
 		String imageName = image.isEmpty() ? " default.jpg" : image.getOriginalFilename();
 
 		product.setImage(imageName);
+		product.setDiscount(0);
+		product.setDiscountPrice(product.getPrice());
 
 		Product saveProduct = productService.saveProduct(product);
 		if (!ObjectUtils.isEmpty(saveProduct)) {
@@ -167,23 +169,53 @@ public class AdminContoller {
 		return "redirect:/admin/loadAddProduct";
 	}
 
-	
 	@GetMapping("/products")
 	public String loadViewProduct(Model m) {
 		List<Product> allProducts = productService.getAllProducts();
 		m.addAttribute("products", allProducts);
 		return "admin/products";
 	}
-		
+
 	@GetMapping("/deleteProduct/{id}")
 	public String loadViewProduct(@PathVariable int id, HttpSession session) {
 		Boolean deleteProduct = productService.deleteProduct(id);
-		if(deleteProduct) {
+		if (deleteProduct) {
 			session.setAttribute("succMsg", " product delete successfully");
-		}
-		else {
+		} else {
 			session.setAttribute("errorMsg", "something went wrong in product while deleting");
 		}
 		return "redirect:/admin/products";
 	}
+
+	@GetMapping("/editProduct/{id}")
+	public String editProduct(@PathVariable int id, Model m) {
+		Product productById = productService.getProductById(id);
+		m.addAttribute("product", productById);
+
+		// for dynimaic selection in editing time
+		m.addAttribute("categories", categoryService.getAllCategory());
+
+		return "admin/edit_product";
+	}
+
+	@PostMapping("/updateProduct")
+	public String updateProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,
+			HttpSession session, Model m) {
+		
+		if(product.getDiscount()<0 || product.getDiscount()>100) {
+			session.setAttribute("errorMsg", "invalid discount");
+		}else {
+			
+		
+		
+		Product updateProduct = productService.updateProduct(product, image);
+		if (!ObjectUtils.isEmpty(updateProduct)) {
+			session.setAttribute("succMsg", " product update successfully");
+		} else {
+			session.setAttribute("errorMsg", "something went wrong in product while updating");
+		}
+		}
+		return "redirect:/admin/editProduct/" + product.getId();
+	}
+
 }
