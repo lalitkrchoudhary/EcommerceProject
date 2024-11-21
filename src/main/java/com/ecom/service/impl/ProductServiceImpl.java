@@ -69,6 +69,7 @@ public class ProductServiceImpl implements IProductService {
 		dbProduct.setPrice(product.getPrice());
 		dbProduct.setStock(product.getStock());
 		dbProduct.setImage(imageName);
+		dbProduct.setIsActive(product.getIsActive());
 		
 		dbProduct.setDiscount(product.getDiscount());
 		
