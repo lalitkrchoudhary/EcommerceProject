@@ -105,4 +105,20 @@ public class ProductServiceImpl implements IProductService {
 		return null;
 	}
 
+
+	@Override
+	public List<Product> getAllActiveProducts(String category) {
+		List<Product> products=null;
+		if(ObjectUtils.isEmpty(category)) {
+
+			products = productRepo.findByIsActiveTrue();
+			return products;
+		}else {
+			
+		products=	productRepo.findByCategory(category);
+		}
+		
+		return products;
+	}
+
 }
