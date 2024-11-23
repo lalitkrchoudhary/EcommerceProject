@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class UserDetails {
+public class UserDtls {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,5 @@ public class UserDetails {
 	private String pincode;
 	private String password;
 	private String profileImage;
+	private String role;
 }
