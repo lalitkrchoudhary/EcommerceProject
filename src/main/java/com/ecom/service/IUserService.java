@@ -5,4 +5,5 @@ import com.ecom.model.UserDtls;
 public interface IUserService {
  
 	public UserDtls saveUser(UserDtls user);
+	public UserDtls getUserByEmail(String email);
 }

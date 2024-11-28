@@ -29,4 +29,11 @@ public class UserServiceImpl implements IUserService {
 		return saveUser;
 	}
 
+
+	@Override
+	public UserDtls getUserByEmail(String email) {
+		
+		return userRepo.findByEmail(email);
+	}
+
 }
