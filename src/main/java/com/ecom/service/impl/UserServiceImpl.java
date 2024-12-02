@@ -1,5 +1,8 @@
 package com.ecom.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +25,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserDtls saveUser(UserDtls user) {
 		user.setRole("ROLE_ADMIN");
+	    user.setIsEnable(true);
 		String encode = passwordEncoder.encode(user.getPassword());
 		user.setPassword(encode);
 		
@@ -34,6 +38,28 @@ public class UserServiceImpl implements IUserService {
 	public UserDtls getUserByEmail(String email) {
 		
 		return userRepo.findByEmail(email);
+	}
+
+
+	@Override
+	public List<UserDtls> getUsers(String role) {
+		
+		return userRepo.findByRole(role);
+	}
+
+
+	@Override
+	public Boolean updateAccountStatus(Integer id, Boolean status) {
+		Optional<UserDtls> byId = userRepo.findById(id);
+		if(byId.isPresent()) {
+			UserDtls userDtls = byId.get();
+			userDtls.setIsEnable(status);
+			userRepo.save(userDtls);
+			return true;
+		}
+			
+			
+		return false;
 	}
 
 }
