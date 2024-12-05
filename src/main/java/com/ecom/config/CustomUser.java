@@ -48,6 +48,12 @@ public class CustomUser implements UserDetails {
 	
 	
 	@Override
+	public boolean isAccountNonLocked() {
+		return user.getAccountNonLocked();
+	}
+
+	
+	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
