@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -28,7 +29,9 @@ import com.ecom.service.ICategoryService;
 import com.ecom.service.IProductService;
 import com.ecom.service.IUserService;
 import com.ecom.service.impl.ProductServiceImpl;
+import com.ecom.util.CommonUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -121,6 +124,57 @@ public class HomeController {
 		
 		return "redirect:/register";
 	}
+	
+	
+	//Forget Password logic
+	@GetMapping("/forgot-password")
+	public String showForgotPassword() {
+		
+		return "forgot_password";
+	}
+	
+	@PostMapping("/forgot-password")
+	public String processForgotPassword(@RequestParam String email, HttpSession session,HttpServletRequest request) {
+	
+		System.out.println("HomeController.FOrgot password ()");
+	
+		UserDtls userByEmail = userService.getUserByEmail(email);
+		
+		if(ObjectUtils.isEmpty(userByEmail)) {
+			session.setAttribute("errorMsg", "invalid email");
+		}else {
+			
+			String resetToken = UUID.randomUUID().toString();
+			userService.updateUserResetToken(email,resetToken);
+			
+			// Generate url:: http://localhost:8080/reset-password?token=afjaophaghooa
+			
+			String url =CommonUtil.generateUrl(request)+"/reset-password?token="+resetToken;
+			
+			
+			Boolean sendMail = CommonUtil.sendMail(url, email);
+			
+			if(sendMail) {
+				session.setAttribute("succMsg", "Check you email to reset your password");
+			}else {
+				session.setAttribute("errorMsg", "Something went wrong while sending email");
+				
+	
+			}
+		}
+		
+		return "redirect:/forgot-password";
+	}
+	
+	
+	//Reset Password
+	@GetMapping("/reset-password")
+	public String showResetPassword() {
+		
+		return "reset_password";
+	}
+	
+	
 	
 	
 	

@@ -15,4 +15,5 @@ public interface IUserService {
 	public void userAccountLock(UserDtls user);
 	public boolean unlockAccountTimeExpired(UserDtls user);
 	public void resetAttempt(int userId);
+	public void updateUserResetToken(String email, String resetToken);
 }

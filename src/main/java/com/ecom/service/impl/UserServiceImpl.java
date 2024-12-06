@@ -110,4 +110,15 @@ public class UserServiceImpl implements IUserService {
 		
 	}
 
+	
+	//for set the token for reset password uses
+
+	@Override
+	public void updateUserResetToken(String email, String resetToken) {
+		UserDtls byEmail = userRepo.findByEmail(email);
+		byEmail.setReset_token(resetToken);
+		userRepo.save(byEmail);
+		
+	}
+
 }
