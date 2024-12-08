@@ -13,6 +13,35 @@
 
 			<div class="col-md-12 p-5">
 				<div class="row">
+					<th:block th:if="${session.succMsg}">
+						<p class="text-success fw-bold text-center alert alert-success" role="alert">[[${session.succMsg}]]</p>
+						<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+
+						<!-- <div class="toast-container position-static">
+							<div class="toast" role="alert" aria-live="assertive"
+								aria-atomic="true">
+								<div class="toast-header">
+									<img src="..." class="rounded me-2" alt="..."> <strong
+										class="me-auto">Bootstrap</strong> <small
+										class="text-body-secondary">just now</small>
+									<button type="button" class="btn-close" data-bs-dismiss="toast"
+										aria-label="Close"></button>
+								</div>
+								<div class="toast-body">See? Just like this.</div>
+							</div>
+							
+							
+							</div> -->
+						
+					</th:block>
+
+
+					<th:block th:if="${session.errorMsg}">
+						<p class="text-danger fw-bold alert alert-danger" role="alert">[[${session.errorMsg}]]</p>
+						TO remove the message
+						<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+
+					</th:block>
 					<div class="col-md-6 text-end">
 						<img alt="" src="/img/product_img/laptop.jpg" height="400px"
 							width="330px">
@@ -21,34 +50,32 @@
 					<div class="col-md-6">
 						<p class="fs-3">[[${p.title}]]</p>
 						<p>
-							<span class="fw-bold"> Description : </span><br> [[${p.description}]]
+							<span class="fw-bold"> Description : </span><br>
+							[[${p.description}]]
 						</p>
 						<p>
-							<span class="fs-bold"> Product Details :</span> <br> 
-							Status : 
+							<span class="fs-bold"> Product Details :</span> <br> Status
+							:
 							<th:block th:if="${p.stock>0}">
-							
-							<span class="badge bg-success">Available</span>
+
+								<span class="badge bg-success">Available</span>
 							</th:block>
-							
+
 							<th:block th:unless="${p.stock>0}">
-							
-							<span
-								class="badge bg-warning"> out of stock</span>
+
+								<span class="badge bg-warning"> out of stock</span>
 							</th:block>
-							
-							  <br> 
-								
-								
-								Category
-							: [[${p.category}]] <br> Policy : 7 Days Replacement and return
+
+							<br> Category : [[${p.category}]] <br> Policy : 7 Days
+							Replacement and return
 						</p>
 
 						<p class="fs-5 fw-bold">
 							Price : &nbsp; &nbsp; &nbsp; <i class="fas fa-rupee-sign"></i>
 							[[${p.discountPrice}]] <span
 								class="fs-6 text-decoration-line-through text-secondary">
-								[[${p.price}]]</span> <span class="fs-6 text-success">[[${p.discount}]]% off</span>
+								[[${p.price}]]</span> <span class="fs-6 text-success">[[${p.discount}]]%
+								off</span>
 						</p>
 						<div class="row">
 							<div class="col-md-4 text-danger text-center p-2">
@@ -66,19 +93,27 @@
 								<p>Free Shipping</p>
 							</div>
 						</div>
-						
-						
+
+
 						<th:block th:if="${p.stock>0}">
-							
-							<a href="/login" class="btn btn-danger col-md-12">Add To Cart</a>
+							<th:block th:if="${userDtls==null}">
+								<a href="/signin" class="btn btn-danger col-md-12">Add To
+									Cart</a>
 							</th:block>
-							
-							<th:block th:unless="${p.stock>0}">
-							<a href="#" class="btn btn-warning col-md-12">Cannot add to Cart</a>
-							
+							<th:block th:unless="${userDtls==null}">
+								<a th:href="@{'/user/addCart?pid='+${p.id}+'&uid='+${userDtls.id}}"
+									class="btn btn-danger col-md-12">Add To Cart</a>
 							</th:block>
 
-					
+						</th:block>
+
+						<th:block th:unless="${p.stock>0}">
+							<a href="#" class="btn btn-warning col-md-12">Cannot add to
+								Cart</a>
+
+						</th:block>
+
+
 
 					</div>
 
