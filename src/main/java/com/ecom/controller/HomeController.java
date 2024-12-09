@@ -28,6 +28,7 @@ import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.model.UserDtls;
 import com.ecom.repository.UserRepository;
+import com.ecom.service.ICartService;
 import com.ecom.service.ICategoryService;
 import com.ecom.service.IProductService;
 import com.ecom.service.IUserService;
@@ -52,8 +53,12 @@ public class HomeController {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+    ICartService cartService;
 
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -62,6 +67,9 @@ public class HomeController {
 			UserDtls user = userService.getUserByEmail(email);
 			System.out.println(user);
 			m.addAttribute("userDtls", user);
+			
+			Integer countCart = cartService.getCountCart(user.getId());
+			m.addAttribute("countCart",countCart);
 
 		}
 
