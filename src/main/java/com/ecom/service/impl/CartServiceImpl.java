@@ -60,24 +60,53 @@ public class CartServiceImpl implements ICartService {
 	public List<Cart> getCartByUser(Integer userId) {
 		List<Cart> carts = cartRepository.findByUserId(userId);
 		
-		Double totalPrice =0.0;
+		Double totalOrderPrice =0.0;
 		
 		List<Cart> updateCarts = new ArrayList<>();
 		
 		for(Cart c: carts) {
-			totalPrice =(c.getProduct().getDiscountPrice() * c.getQuantity()) +totalPrice;
+			Double totalPrice =(c.getProduct().getDiscountPrice() * c.getQuantity());
 			c.setTotalPrice(totalPrice);
+			totalOrderPrice = totalOrderPrice + totalPrice;
+			c.setTotalOrderPrice(totalOrderPrice);
 			updateCarts.add(c);
 		}
 		
 		
-		return carts;
+		return updateCarts;
 	}
 
 	@Override
 	public Integer getCountCart(Integer userId) {
 		Integer countByUserId = cartRepository.countByUserId(userId);
 		return countByUserId;
+	}
+
+	@Override
+	public void updateQuantity(String sy, Integer cid) {
+		Cart cart = cartRepository.findById(cid).get();
+		int updateQuantity;
+		
+		if(sy.equalsIgnoreCase("de")) {
+			updateQuantity=cart.getQuantity()-1;
+			
+			if(updateQuantity<=0) {
+				cartRepository.delete(cart);		
+			}else {
+				cart.setQuantity(updateQuantity);
+				cartRepository.save(cart);
+				
+			}
+			
+			
+		}else {
+			updateQuantity= cart.getQuantity()+1;
+			cart.setQuantity(updateQuantity);
+			cartRepository.save(cart);
+		}
+		
+		
+		
 	}
 
 }
