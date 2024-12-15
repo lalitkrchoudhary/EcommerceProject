@@ -9,14 +9,17 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ecom.model.Cart;
 import com.ecom.model.Category;
+import com.ecom.model.OrderRequest;
 import com.ecom.model.UserDtls;
 import com.ecom.service.ICartService;
 import com.ecom.service.ICategoryService;
+import com.ecom.service.IOrderService;
 import com.ecom.service.IUserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +37,9 @@ public class UserController {
 	
 	@Autowired
 	private ICartService cartService;
+	
+	@Autowired
+	private IOrderService orderService; 
 	
 	
 	@ModelAttribute
@@ -108,4 +114,14 @@ public class UserController {
 		return "/user/order";
 	}
 	
+	@PostMapping("/save-order")
+	public String saveOrder(@ModelAttribute OrderRequest request,Principal p) {
+		System.out.println(request);
+		
+		UserDtls user = getLoggedInUserDetails(p);	
+		
+		orderService.saveOrder(user.getId(), request);
+		
+		return "/user/success";
+	}
 }
