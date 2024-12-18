@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.ecom.model.Cart;
 import com.ecom.model.Category;
 import com.ecom.model.OrderRequest;
+import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
 import com.ecom.service.ICartService;
 import com.ecom.service.ICategoryService;
 import com.ecom.service.IOrderService;
 import com.ecom.service.IUserService;
+import com.ecom.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -110,7 +112,20 @@ public class UserController {
 	
 	
 	@GetMapping("/orders")
-	public String orderPage() {
+	public String orderPage(Principal p, Model m) {
+		
+		UserDtls user = getLoggedInUserDetails(p);
+		List<Cart> carts = cartService.getCartByUser(user.getId());
+		m.addAttribute("carts",carts);
+		
+		if(carts.size() >0) {
+			Double orderPrice = carts.get(carts.size()-1).getTotalOrderPrice();
+
+		Double totalOrderPrice = carts.get(carts.size()-1).getTotalOrderPrice()+250+100;
+		m.addAttribute("totalOrderPrice",totalOrderPrice);
+		m.addAttribute("orderPrice",orderPrice);
+		}
+		
 		return "/user/order";
 	}
 	
@@ -122,6 +137,44 @@ public class UserController {
 		
 		orderService.saveOrder(user.getId(), request);
 		
+		return "redirect:/user/success";
+	}
+	
+	@GetMapping("/success")
+	public String loadSuccess() {
 		return "/user/success";
 	}
+	
+	@GetMapping("/user-orders")
+	public String myOrder(Model m, Principal p) {
+		UserDtls loginUser = getLoggedInUserDetails(p);
+		List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
+		m.addAttribute("orders",orders);
+		return "/user/my_orders";
+	}
+	
+	@GetMapping("/update-status")
+	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+		OrderStatus[] values = OrderStatus.values();
+		String status = null;
+		for(OrderStatus orderSt : values) {
+			if(orderSt.getId().equals(st)) {
+				status = orderSt.getName();
+			}
+		}
+		Boolean updateOrder = orderService.updateOrderStatus(id, status);
+		
+		if(updateOrder) {
+			session.setAttribute("succMsg", "Status updated");
+		}else {
+			session.setAttribute("errorMsg", "Status not updated");
+		}
+		System.out.println(values);
+		return "redirect:/user/user-orders";
+	}
+	
+	
+	
 }
+
+
