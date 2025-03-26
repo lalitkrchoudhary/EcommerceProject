@@ -60,9 +60,12 @@
 					</th:block>
 
 					<th:block th:if="${userDtls!=null}">
+					<th:block th:if="${userDtls.role == 'ROLE_USER'}">
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="/user/cart"><i
 								class="fa-solid fa-cart-shopping"></i>Cart [ [[${countCart}]] ]</a></li>
+								
+						</th:block>
 
 						<li class="nav-item dropdown"><a
 							class="nav-link dropdown-toggle active" href="#" role="button"

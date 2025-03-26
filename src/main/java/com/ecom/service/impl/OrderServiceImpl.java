@@ -83,4 +83,10 @@ public class OrderServiceImpl implements IOrderService {
 			return true;
 		}
 		return false;
+	}
+
+
+	@Override
+	public List<ProductOrder> getAllOrders() {
+		return orderRepository.findAll();
 	}}	

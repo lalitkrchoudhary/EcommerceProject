@@ -24,9 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
 import com.ecom.service.ICartService;
 import com.ecom.service.ICategoryService;
+import com.ecom.service.IOrderService;
 import com.ecom.service.IProductService;
 import com.ecom.service.IUserService;
 
@@ -48,6 +50,8 @@ public class AdminContoller {
 	@Autowired 
 	private ICartService cartService;
 	
+	@Autowired
+	private IOrderService orderService;	
 	
 	@ModelAttribute
 	public void getUserDetails(Principal p,Model m) {
@@ -271,6 +275,15 @@ public class AdminContoller {
 		
 		
 		return "redirect:/admin/users";
+	}
+	
+	
+	@GetMapping("/orders")
+	public String getAllOrders(Model m) {
+	
+		List<ProductOrder> allOrders = orderService.getAllOrders();
+		m.addAttribute("orders",allOrders);
+		return "/admin/orders";
 	}
 	
 	
